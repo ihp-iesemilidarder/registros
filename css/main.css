@@ -1,0 +1,123 @@
+body{
+    background-color: #efefef;
+}
+.fa-address-book{
+    font-size: 3em;
+    color: var(--blue);
+}
+#alert{
+    display: none;
+    position: fixed;
+    width: 100%;
+    top:0;
+    z-index: 99;
+}
+.container h1{
+    display: inline;
+    font-family: 'Times New Roman', Times, serif;
+    margin-left: 1rem!important;
+}
+.container .border-dotted{
+    border-bottom: 3px dotted rgba(0,0,0,.2);
+    padding-bottom: .5rem!important;
+}
+
+/*HEADERS*/
+    .header{
+        background:linear-gradient(to top, #88aecc, #d2e3ee);
+    }
+    .header-list{
+        background:linear-gradient(to top, #88aecc, #d2e3ee);
+    }
+    .header h5, .header-list h5{
+        font-weight: bold;
+        color: #5c5c5c;
+        text-shadow: -.8px -.8px 1px black, 0px 1px 5px white;
+        font-size: 1.5em;
+        display: inline;
+    }
+    .header .far,.header-list .far{
+        font-size:1.8em;
+    }
+/*formualrio*/
+    form{
+        width: 100%;
+    }
+    fieldset > legend{
+        font-size: 1em;
+        width: 11%;
+    }
+    fieldset{
+        border:1px solid #9b9b9b;
+    }
+    input[type="text"], input[type="date"]{
+        border: 1px solid #9b9b9b;
+        font-size: 14px;
+        box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.5) inset;
+        padding:10px;
+    }
+    label{
+        margin:0;
+        padding: 2%;
+        display: flex;
+    }
+    label .fa, label .far{
+        font-size: 1.5em;
+    }
+    .btn-new-player{
+        background:#1883ba;
+        border-radius: 5px;
+        border:2px solid #0016b0;
+        font-weight: bold;
+        color: white;
+    }
+/*lista de jugadores*/
+    .list_players .sublists > .col-sm{
+        border:1px solid rgba(0,0,0,.2);
+    }
+    .card-player{
+        display: flex;
+        padding: 0;
+        position: relative;
+    }
+    .card-player p{
+        margin: 0;
+        font-size: 12px;
+    }
+    .card-player:before{
+        content:"";
+        background:url("../img/user.png");
+        background-size: cover;
+        padding: 27px;
+    }
+    .card-player .col-sm{
+        background:#e6f7ff;
+    }
+    .list_players .fa-times-circle{
+        position: absolute;
+        right: -11px;
+        top: -11px;
+        background: red;
+        border-radius: 100px;
+        color: white;
+        z-index: 99;
+        font-size: 1.5rem;
+        display: none;
+        cursor: pointer;
+    }
+    .card-player:hover .fa-times-circle{
+        display: block;
+    }
+
+/*footer*/
+    .footer{
+        background:linear-gradient(to bottom, #e8eef2,#e8eef2,#bbccd6, #e8eef2);
+    }
+
+/*************************mobile responsive*************************/
+@media(max-width:600px){
+    fieldset > legend{
+        font-size: 1em;
+        width: 22%;
+    }
+}
