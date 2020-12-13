@@ -6,7 +6,10 @@ window.onload=function(){
 
     //variables globales
     var players=[];
-    var values=[];
+    var id_player=0;
+    var values_player=[];
+    var duplicado=[];
+    var delete_players=[];
 
     function check_DNI(code){
         /*
@@ -25,7 +28,10 @@ window.onload=function(){
     }
 
     function check_date(date){
-        if (date.match(/^[0-9]{2}\/[0-9]{2}\/[0-9]{4}$/)!=null || date.match(/^[0-9]{4}\-[0-9]{2}\-[0-9]{2}$/)!=null) {
+        current_month=new Date().getMonth()+1;
+        current_day=new Date().getDate();
+        current_date=new Date().getFullYear()+"-"+current_month+"-"+current_day;
+        if ((date.match(/^[0-9]{2}\/[0-9]{2}\/[0-9]{4}$/)!=null || date.match(/^[0-9]{4}\-[0-9]{2}\-[0-9]{2}$/)!=null) && date<=current_date) {
             return true;
         }
         return false;
@@ -45,7 +51,7 @@ window.onload=function(){
         return false;
     }
     function check_compte(compte){
-        if (compte.match(/^[0-9]{4}(\-| )[0-9]{4}(\-| )[0-9]{4}(\-| )[0-9]{4}$/)==null) {
+        if (compte.match(/^[0-9]{4}\-[0-9]{4}\-[0-9]{4}\-[0-9]{4}$/)==null) {
             return false;
         }
         return true;
@@ -78,24 +84,56 @@ window.onload=function(){
         document.getElementById("alert").innerHTML=text;
         document.getElementById("alert").style.display=ev;
     }
-    function add_player(list_values,id, select){
-        document.getElementById(id).innerHTML+=`
-        <div class="row my-3">
-            <div class="container card-player">
-                <i class="fas fa-times-circle close-player" onclick="this.parentNode.parentNode.remove();"></i>
-                <div class="col-sm px-1 ml-2">
-                    <p>${list_values[1]+" "+list_values[2]}</p>
-                    <p>${list_values[5]}</p>
-                    <p>${list_values[7]}</p>
+    function remove_player(id){
+        players.splice(id,1);
+        id.parentNode.parentNode.parentNode.removeChild(id.parentNode.parentNode);
+        console.log(players);
+    }
+    function add_player(id){
+        for(a=0;a<=players.length-1;a++){
+            for(i=0;i<=players[a].length-2;i++){
+                //Si los valores no son de los campos 'Nombre','Naixement','Tjugador', me hara
+                //la comprobacion
+                if(i!=1 && i!=3 && i!=7){
+                    if(players[a][i]==values_player[i]){
+                        console.log(a+":\n\t"+i+": "+players[a][i]+"=="+values_player[i]);
+                        duplicado=true;
+                    }
+                }
+            }
+        }
+        if(duplicado==false){
+            //values[54695722N,IVAN,HEREDIA,2002-02-21,1234,ivan@hotmail.com,1234-1234-1234-1234,PRO,0]
+            //          0       1       2       3       4           5           6                 7  8
+            document.getElementById(id).innerHTML+=`
+                <div class="row my-3">
+                    <div class="container card-player" id="${values_player[8]}">
+                        <i class="fas fa-times-circle close-player" id="remove_player${values_player[8]}"></i>
+                        <div class="col-sm px-1 ml-2">
+                            <p>${values_player[1]+" "+values_player[2]}</p>
+                            <p>${values_player[5]}</p>
+                            <p>${values_player[7]}</p>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-        `;
-        players.push(values);
+            `;
+            players.push(values_player);            
+        }
+        list_ids=document.getElementsByClassName("close-player");
+        for(x=0;x<=list_ids.length-1;x++){
+            document.getElementById(list_ids[x].id).addEventListener("click",function(){
+                players.splice(this.id,1);
+                this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);
+                console.log(players);
+            });            
+        }
+
+        console.log(values_player);
+        console.log(players);
+        values_player=[];
+        duplicado=false;
     }
 
-    /*¿Porque si no especificas el tipo de variables var/let no 
-    funciona?*/
     const ids=[
         ["DNI","keyup","check_DNI"],
         ["naixement","change","check_date"],
@@ -107,7 +145,7 @@ window.onload=function(){
         ["Tjugador","change","check_empty"]
     ];
 
-    //cada cada campo abrá un listener que hara la funcion especifica
+    // cada campo abrá un listener que hara la funcion especifica
     for(x=0; x<=ids.length-1;x++){
         let id=ids[x];
         document.getElementById(id[0]).addEventListener(id[1],function(){
@@ -121,7 +159,6 @@ window.onload=function(){
     /*Cuando se de click en "Afegir jugador"*/
     document.getElementById("add_player").addEventListener("click",function(){
         edad=parseInt(new Date().getFullYear())-parseInt(document.getElementById("naixement").value.split("-")[0]);
-        console.log(edad);
 
         /*Si los campos tienen valores vacios, entonces se le añade la clase "is-invalid" con el atributo data-check
         con valor 'false'*/
@@ -144,6 +181,7 @@ window.onload=function(){
             add_check("is-invalid",document.getElementById("Tjugador"));
         }
     
+        //comprueba si hay algún campo erroneo
         inputs=document.getElementsByClassName("form-control");
         let check=true;
         for(i=0;i<=inputs.length-1;i++){
@@ -157,31 +195,17 @@ window.onload=function(){
         }else{
             show_alert("alert-success","Formulario enviado correctamente","block");
         }
+
+
         let inputs_checked=document.getElementsByClassName("form-control");
         let select;
         for(y=0;y<=inputs_checked.length-1;y++){
             if(inputs_checked[y].id=="Tjugador"){
                 select=inputs_checked[y].value;
             }
-            values.push(inputs_checked[y].value);
+            values_player.push(inputs_checked[y].value.toLowerCase());
         }
-        let duplicado;
-        /*bucle para comprobar si el array values existe en array players*/
-        for(z=0;z<=players.length-1;z++){
-            //para cada subarray....
-            for(subarray=0;subarray<=players[z].length-1;subarray++){
-                if(values[subarray]==players[z][subarray]){
-                    duplicado=true;
-                    console.log(players[z][subarray],values[subarray]);
-                }else{
-                    duplicado=false;
-                    break; 
-                }
-                console.log("--------------------------------------------------------------");
-            }
-        }
-        //console.log("players: "+players+"\n values"+values+"\n duplicado: "+duplicado);
-        add_player(values,"add_player_"+select, select);
-        players.push(values);
+        values_player.push(id_player++);
+        add_player("add_player_"+select);
     });
 }
