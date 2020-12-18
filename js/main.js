@@ -50,6 +50,20 @@ window.onload=function(){
         }
         return false;
     }
+    function show_alert(type,text,ev){
+        element_alert=document.getElementById("alert");
+        if(type=="alert-danger"){
+            element_alert.classList.remove("alert-success");
+        }else{
+            element_alert.classList.remove("alert-danger");
+        }
+        element_alert.classList.add(type);
+        element_alert.innerHTML=text;
+        element_alert.style.display=ev;
+        element_alert.addEventListener("click",function(e){
+            this.style.display="none";
+        });
+    }
     function check_compte(compte){
         if (compte.match(/^[0-9]{4}\-[0-9]{4}\-[0-9]{4}\-[0-9]{4}$/)==null) {
             return false;
@@ -74,30 +88,24 @@ window.onload=function(){
         id.classList.add(cls);
         id.setAttribute("data-check",boolean);
     }
-    function show_alert(type,text,ev){
-        if(type=="alert-danger"){
-            document.getElementById("alert").classList.remove("alert-success");
-        }else{
-            document.getElementById("alert").classList.remove("alert-danger");
-        }
-        document.getElementById("alert").classList.add(type);
-        document.getElementById("alert").innerHTML=text;
-        document.getElementById("alert").style.display=ev;
-    }
     function remove_player(id){
         players.splice(id,1);
         id.parentNode.parentNode.parentNode.removeChild(id.parentNode.parentNode);
         console.log(players);
     }
     function add_player(id){
+        duplicados=[];
         for(a=0;a<=players.length-1;a++){
             for(i=0;i<=players[a].length-2;i++){
                 //Si los valores no son de los campos 'Nombre','Naixement','Tjugador', me hara
                 //la comprobacion
                 if(i!=1 && i!=3 && i!=7){
                     if(players[a][i]==values_player[i]){
-                        console.log(a+":\n\t"+i+": "+players[a][i]+"=="+values_player[i]);
+                        //console.log(a+":\n\t"+i+": "+players[a][i]+"=="+values_player[i]);
                         duplicado=true;
+                        duplicados.push(duplicado);
+                    }else{
+                        duplicados.push(false);
                     }
                 }
             }
@@ -118,6 +126,14 @@ window.onload=function(){
                 </div>
             `;
             players.push(values_player);            
+        }else{
+            let campos_duplicados=["DNI","Llinatges","Telefon","Email","Compte"];
+            for(x=0;x<duplicados.length;x++){
+                if (duplicados[x]==false) {
+                    campos_duplicados.splice(x,1);
+                }
+            }
+            show_alert("alert-danger","Els camps "+campos_duplicados+" ya son existents en la base de dades");
         }
         list_ids=document.getElementsByClassName("close-player");
         for(x=0;x<=list_ids.length-1;x++){
@@ -128,8 +144,8 @@ window.onload=function(){
             });            
         }
 
-        console.log(values_player);
-        console.log(players);
+        /*console.log(values_player);
+        console.log(players);*/
         values_player=[];
         duplicado=false;
     }

@@ -11,6 +11,7 @@ body{
     width: 100%;
     top:0;
     z-index: 99;
+    cursor: cell;
 }
 .container h1{
     display: inline;
