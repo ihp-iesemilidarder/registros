@@ -1,1 +1,1 @@
-!["screenshot of proyect"](https://github.com/ihp-iesemilidarder/registros/blob/master/project1.png)
+!["screenshot of proyect"](https://github.com/ihp-iesemilidarder/registros/img/project1.png)
