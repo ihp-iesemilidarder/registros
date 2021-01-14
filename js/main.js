@@ -49,14 +49,17 @@ window.onload = function () {
         }
         return false;
     }
+
+    // funcion que muestra una popup que el mensaje indicado
     function show_alert(type, text, ev) {
         element_alert = document.getElementById("alert");
+        // si el type es 'alert-danger' el popup será verde, sino rojo
         if (type == "alert-danger") {
             element_alert.classList.remove("alert-success");
         } else {
             element_alert.classList.remove("alert-danger");
         }
-        element_alert.classList.add(type);
+        element_alert.classList.add(type); //añado la clase indicado al elemento DOM
         element_alert.innerHTML = text;
         element_alert.style.display = ev;
         element_alert.addEventListener("click", function (e) {
@@ -75,6 +78,8 @@ window.onload = function () {
         }
         return true;
     }
+
+    //Si el campo es correcto, elimino al input correspondiente la clase 'is-invalid' (si tiene), le añado la clase 'is-valid' y añado también al atributo data-check true
     function add_check(cls, id) {
         let boolean;
         if (cls == "is-valid") {
@@ -87,13 +92,22 @@ window.onload = function () {
         id.classList.add(cls);
         id.setAttribute("data-check", boolean);
     }
+
+    //añadimos el jugador
     function add_player(id) {
         duplicados = [];
+
+        // va iterando cada subarray del array player
         for (a = 0; a <= players.length - 1; a++) {
+
+            // va iterando cada elemento del subarray
             for (i = 0; i <= players[a].length - 2; i++) {
                 //Si los valores no son de los campos 'Nombre','Naixement','Tjugador', me hara
-                //la comprobacion
+                //la comprobacion, ya que cuyos campos no necesito saber validar si son repetidos
                 if (i != 1 && i != 3 && i != 7) {
+
+                    //Si son repetidos añadelo al array de valores duplicados
+                    // NOTA: El array 'duplicados' es un array con valores booleanos, que dependiendo de la posición, si es true, es que está repetido, sino no.
                     if (players[a][i] == values_player[i]) {
                         //console.log(a+":\n\t"+i+": "+players[a][i]+"=="+values_player[i]);
                         duplicado = true;
@@ -104,6 +118,9 @@ window.onload = function () {
                 }
             }
         }
+
+        /* Auque los valor este duplicado, aparte de añadirlo al array 'duplicados', si es false, me añadirás el jugador a la lista indicada con la variable id.
+           Sino en el array 'campos duplicados', me eliminas la posición [x] indicada */
         if (duplicado == false) {
             //values[54695722N,IVAN,HEREDIA,2002-02-21,1234,ivan@hotmail.com,1234-1234-1234-1234,PRO,0]
             //          0       1       2       3       4           5           6                 7  8
@@ -120,6 +137,12 @@ window.onload = function () {
                 </div>
             `;
             players.push(values_player);
+        
+        /* El array 'campos_duplicados', es un array que especifica todos aquellos campos que NO DEBEN de estar repetidos.
+           Lo que hago que ello es que itero cada elemento del array y como el array 'duplicados' y 'campos_duplicados' es de la misma
+           longitud, si el indice del elemento de 'campos_duplicados' contiene un 'false' entonces me eliminas el elemento del 'campos_duplicados' que tenga
+           el mismo indice que 'duplicados'. Así se que tipo de dato está duplicado.
+        */
         } else {
             let campos_duplicados = ["DNI", "Llinatges", "Telefon", "Email", "Compte"];
             for (x = 0; x < duplicados.length; x++) {
@@ -127,8 +150,14 @@ window.onload = function () {
                     campos_duplicados.splice(x, 1);
                 }
             }
-            show_alert("alert-danger", "Els camps " + campos_duplicados + " ya son existents en la base de dades");
+            show_alert("alert-danger", "Los campos " + campos_duplicados + " ya son existentes en la base de datos");
         }
+
+        /* Cada item de la lista de jugadores, si pasas por encima (hover), te saldrá una equiz para eliminar ese jugador.
+           Para ello, itero cada elemento que contenga la clase 'close-player' (boton cerrar de cada jugador), y creo un addEventListener().
+           Cuyo click eliminará del array 'players' la posición indicada en this.id, (el id de cada item es su posición en el array 'players'),
+           y también eliminará el DOM del padre de cuyo elemento (la cruz de eliminar)
+        */
         list_ids = document.getElementsByClassName("close-player");
         for (x = 0; x <= list_ids.length - 1; x++) {
             document.getElementById(list_ids[x].id).addEventListener("click", function () {
@@ -167,6 +196,8 @@ window.onload = function () {
     }
     /*Cuando se de click en "Afegir jugador"*/
     document.getElementById("add_player").addEventListener("click", function () {
+        
+        //calcula la edad restando el año actual con el año de nacimiento
         edad = parseInt(new Date().getFullYear()) - parseInt(document.getElementById("naixement").value.split("-")[0]);
 
         /*Si los campos tienen valores vacios, entonces se le añade la clase "is-invalid" con el atributo data-check
@@ -206,15 +237,16 @@ window.onload = function () {
         }
 
 
+        // Selecciono todos los campos del formulario y lo paso por un bucle for, que en cada iteración lo añadirá al array
         let inputs_checked = document.getElementsByClassName("form-control");
         let select;
         for (y = 0; y <= inputs_checked.length - 1; y++) {
             if (inputs_checked[y].id == "Tjugador") {
                 select = inputs_checked[y].value;
             }
-            values_player.push(inputs_checked[y].value.toLowerCase());
+            values_player.push(inputs_checked[y].value.toLowerCase()); // toLowerCase() convierte las mayúsculas en minúsculas
         }
-        values_player.push(id_player++);
+        values_player.push(id_player++); // Al final de la lista añade el identificador
         add_player("add_player_" + select);
     });
 }
