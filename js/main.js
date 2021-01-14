@@ -244,7 +244,7 @@ window.onload = function () {
             if (inputs_checked[y].id == "Tjugador") {
                 select = inputs_checked[y].value;
             }
-            values_player.push(inputs_checked[y].value.toLowerCase()); // toLowerCase() convierte las mayúsculas en minúsculas
+            values_player.push(inputs_checked[y].value.toLowerCase()); // toLowerCase() convierte las mayúsculas en minúsculas (Así facilitamos las validaciones de duplicados)
         }
         values_player.push(id_player++); // Al final de la lista añade el identificador
         add_player("add_player_" + select);
